@@ -1,0 +1,312 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ANSI-C Compiler
+                                      3 ; Version 4.1.0 #12072 (Linux)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module main
+                                      6 	.optsdcc -mgbz80
+                                      7 	
+                                      8 ;--------------------------------------------------------
+                                      9 ; Public variables in this module
+                                     10 ;--------------------------------------------------------
+                                     11 	.globl _main
+                                     12 	.globl _clock
+                                     13 	.globl _puts
+                                     14 	.globl _printf
+                                     15 	.globl _checkPrimeNumber
+                                     16 	.globl _delay
+                                     17 ;--------------------------------------------------------
+                                     18 ; special function registers
+                                     19 ;--------------------------------------------------------
+                                     20 ;--------------------------------------------------------
+                                     21 ; ram data
+                                     22 ;--------------------------------------------------------
+                                     23 	.area _DATA
+                                     24 ;--------------------------------------------------------
+                                     25 ; absolute external ram data
+                                     26 ;--------------------------------------------------------
+                                     27 	.area _DABS (ABS)
+                                     28 ;--------------------------------------------------------
+                                     29 ; global & static initialisations
+                                     30 ;--------------------------------------------------------
+                                     31 	.area _HOME
+                                     32 	.area _GSINIT
+                                     33 	.area _GSFINAL
+                                     34 	.area _GSINIT
+                                     35 ;--------------------------------------------------------
+                                     36 ; Home
+                                     37 ;--------------------------------------------------------
+                                     38 	.area _HOME
+                                     39 ;main.c:68: void delay(int number_of_seconds)
+                                     40 ;	---------------------------------
+                                     41 ; Function delay
+                                     42 ; ---------------------------------
+      000000                         43 _delay::
+      000000 E8 FC                   44 	add	sp, #-4
+                                     45 ;main.c:71: int milli_seconds = 1000 * number_of_seconds;
+      000002 F8 06                   46 	ldhl	sp,#6
+      000004 2A                      47 	ld	a, (hl+)
+      000005 4F                      48 	ld	c, a
+      000006 46                      49 	ld	b, (hl)
+      000007 69                      50 	ld	l, c
+      000008 60                      51 	ld	h, b
+      000009 29                      52 	add	hl, hl
+      00000A 09                      53 	add	hl, bc
+      00000B 29                      54 	add	hl, hl
+      00000C 09                      55 	add	hl, bc
+      00000D 29                      56 	add	hl, hl
+      00000E 09                      57 	add	hl, bc
+      00000F 29                      58 	add	hl, hl
+      000010 09                      59 	add	hl, bc
+      000011 29                      60 	add	hl, hl
+      000012 29                      61 	add	hl, hl
+      000013 09                      62 	add	hl, bc
+      000014 29                      63 	add	hl, hl
+      000015 29                      64 	add	hl, hl
+      000016 29                      65 	add	hl, hl
+      000017 33                      66 	inc	sp
+      000018 33                      67 	inc	sp
+      000019 E5                      68 	push	hl
+                                     69 ;main.c:74: clock_t start_time = clock();
+      00001A CDr00r00                70 	call	_clock
+      00001D F8 02                   71 	ldhl	sp,	#2
+      00001F 7B                      72 	ld	a, e
+      000020 22                      73 	ld	(hl+), a
+      000021 72                      74 	ld	(hl), d
+                                     75 ;main.c:77: while (clock() < start_time + milli_seconds);
+      000022                         76 00101$:
+      000022 CDr00r00                77 	call	_clock
+      000025 C1                      78 	pop	bc
+      000026 C5                      79 	push	bc
+      000027 F8 02                   80 	ldhl	sp,	#2
+      000029 2A                      81 	ld	a, (hl+)
+      00002A 66                      82 	ld	h, (hl)
+      00002B 6F                      83 	ld	l, a
+      00002C 09                      84 	add	hl, bc
+      00002D 4D                      85 	ld	c, l
+      00002E 44                      86 	ld	b, h
+      00002F 7B                      87 	ld	a, e
+      000030 91                      88 	sub	a, c
+      000031 7A                      89 	ld	a, d
+      000032 98                      90 	sbc	a, b
+      000033 38 ED                   91 	jr	C, 00101$
+                                     92 ;main.c:78: }
+      000035 E8 04                   93 	add	sp, #4
+      000037 C9                      94 	ret
+                                     95 	.area _HOME
+                                     96 ;--------------------------------------------------------
+                                     97 ; code
+                                     98 ;--------------------------------------------------------
+                                     99 	.area _CODE
+                                    100 ;main.c:14: int main() {
+                                    101 ;	---------------------------------
+                                    102 ; Function main
+                                    103 ; ---------------------------------
+      000000                        104 _main::
+      000000 E8 FE                  105 	add	sp, #-2
+                                    106 ;main.c:22: printf("Prime numbers between %d and %d are: \n", n1, n2);
+      000002 21 10 27               107 	ld	hl, #0x2710
+      000005 E5                     108 	push	hl
+      000006 21 00 00               109 	ld	hl, #0x0000
+      000009 E5                     110 	push	hl
+      00000A 21r7Cr00               111 	ld	hl, #___str_0
+      00000D E5                     112 	push	hl
+      00000E CDr00r00               113 	call	_printf
+      000011 E8 06                  114 	add	sp, #6
+                                    115 ;main.c:23: delay(1);
+      000013 21 01 00               116 	ld	hl, #0x0001
+      000016 E5                     117 	push	hl
+      000017 CDr00r00               118 	call	_delay
+      00001A E8 02                  119 	add	sp, #2
+                                    120 ;main.c:24: while(1)
+      00001C                        121 00108$:
+                                    122 ;main.c:26: int c =0;
+      00001C AF                     123 	xor	a, a
+      00001D F8 00                  124 	ldhl	sp,	#0
+      00001F 22                     125 	ld	(hl+), a
+      000020 77                     126 	ld	(hl), a
+                                    127 ;main.c:27: for (i = n1 + 1; i < n2; ++i) 
+      000021 01 01 00               128 	ld	bc, #0x0001
+      000024                        129 00111$:
+      000024 79                     130 	ld	a, c
+      000025 D6 10                  131 	sub	a, #0x10
+      000027 78                     132 	ld	a, b
+      000028 17                     133 	rla
+      000029 3F                     134 	ccf
+      00002A 1F                     135 	rra
+      00002B DE A7                  136 	sbc	a, #0xa7
+      00002D 30 3F                  137 	jr	NC, 00106$
+                                    138 ;main.c:31: flag = checkPrimeNumber(i);
+      00002F C5                     139 	push	bc
+      000030 C5                     140 	push	bc
+      000031 CDrB0r00               141 	call	_checkPrimeNumber
+      000034 E8 02                  142 	add	sp, #2
+      000036 C1                     143 	pop	bc
+                                    144 ;main.c:32: if (flag == 1)
+      000037 7B                     145 	ld	a, e
+      000038 3D                     146 	dec	a
+      000039 B2                     147 	or	a, d
+      00003A 20 2F                  148 	jr	NZ, 00112$
+                                    149 ;main.c:34: if(c == 3)
+      00003C F8 00                  150 	ldhl	sp,	#0
+      00003E 7E                     151 	ld	a, (hl)
+      00003F D6 03                  152 	sub	a, #0x03
+      000041 23                     153 	inc	hl
+      000042 B6                     154 	or	a, (hl)
+      000043 20 13                  155 	jr	NZ, 00102$
+                                    156 ;main.c:36: printf("\t%d\n", i);
+      000045 C5                     157 	push	bc
+      000046 C5                     158 	push	bc
+      000047 21rA3r00               159 	ld	hl, #___str_1
+      00004A E5                     160 	push	hl
+      00004B CDr00r00               161 	call	_printf
+      00004E E8 04                  162 	add	sp, #4
+      000050 C1                     163 	pop	bc
+                                    164 ;main.c:37: c = 0;
+      000051 AF                     165 	xor	a, a
+      000052 F8 00                  166 	ldhl	sp,	#0
+      000054 22                     167 	ld	(hl+), a
+      000055 77                     168 	ld	(hl), a
+      000056 18 13                  169 	jr	00112$
+      000058                        170 00102$:
+                                    171 ;main.c:41: printf("\t%d", i);
+      000058 C5                     172 	push	bc
+      000059 C5                     173 	push	bc
+      00005A 21rA8r00               174 	ld	hl, #___str_2
+      00005D E5                     175 	push	hl
+      00005E CDr00r00               176 	call	_printf
+      000061 E8 04                  177 	add	sp, #4
+      000063 C1                     178 	pop	bc
+                                    179 ;main.c:42: c++;
+      000064 F8 00                  180 	ldhl	sp,	#0
+      000066 34                     181 	inc	(hl)
+      000067 20 02                  182 	jr	NZ, 00145$
+      000069 23                     183 	inc	hl
+      00006A 34                     184 	inc	(hl)
+      00006B                        185 00145$:
+      00006B                        186 00112$:
+                                    187 ;main.c:27: for (i = n1 + 1; i < n2; ++i) 
+      00006B 03                     188 	inc	bc
+      00006C 18 B6                  189 	jr	00111$
+      00006E                        190 00106$:
+                                    191 ;main.c:47: printf("\n\n\n\n");
+      00006E 21rACr00               192 	ld	hl, #___str_4
+      000071 E5                     193 	push	hl
+      000072 CDr00r00               194 	call	_puts
+      000075 E8 02                  195 	add	sp, #2
+      000077 18 A3                  196 	jr	00108$
+                                    197 ;main.c:51: }
+      000079 E8 02                  198 	add	sp, #2
+      00007B C9                     199 	ret
+      00007C                        200 ___str_0:
+      00007C 50 72 69 6D 65 20 6E   201 	.ascii "Prime numbers between %d and %d are: "
+             75 6D 62 65 72 73 20
+             62 65 74 77 65 65 6E
+             20 25 64 20 61 6E 64
+             20 25 64 20 61 72 65
+             3A 20
+      0000A1 0A                     202 	.db 0x0a
+      0000A2 00                     203 	.db 0x00
+      0000A3                        204 ___str_1:
+      0000A3 09                     205 	.db 0x09
+      0000A4 25 64                  206 	.ascii "%d"
+      0000A6 0A                     207 	.db 0x0a
+      0000A7 00                     208 	.db 0x00
+      0000A8                        209 ___str_2:
+      0000A8 09                     210 	.db 0x09
+      0000A9 25 64                  211 	.ascii "%d"
+      0000AB 00                     212 	.db 0x00
+      0000AC                        213 ___str_4:
+      0000AC 0A                     214 	.db 0x0a
+      0000AD 0A                     215 	.db 0x0a
+      0000AE 0A                     216 	.db 0x0a
+      0000AF 00                     217 	.db 0x00
+                                    218 ;main.c:53: int checkPrimeNumber(int n) {
+                                    219 ;	---------------------------------
+                                    220 ; Function checkPrimeNumber
+                                    221 ; ---------------------------------
+      0000B0                        222 _checkPrimeNumber::
+      0000B0 E8 FC                  223 	add	sp, #-4
+                                    224 ;main.c:54: int i, flag = 1;
+      0000B2 F8 00                  225 	ldhl	sp,	#0
+      0000B4 36 01                  226 	ld	(hl), #0x01
+      0000B6 AF                     227 	xor	a, a
+      0000B7 23                     228 	inc	hl
+                                    229 ;main.c:56: for (i = 2; i <= n / 2; ++i) {
+      0000B8 22                     230 	ld	(hl+), a
+      0000B9 36 02                  231 	ld	(hl), #0x02
+      0000BB AF                     232 	xor	a, a
+      0000BC 23                     233 	inc	hl
+      0000BD 77                     234 	ld	(hl), a
+      0000BE                        235 00105$:
+      0000BE F8 06                  236 	ldhl	sp,#6
+      0000C0 2A                     237 	ld	a, (hl+)
+      0000C1 4F                     238 	ld	c, a
+      0000C2 46                     239 	ld	b, (hl)
+      0000C3 CB 78                  240 	bit	7, b
+      0000C5 28 01                  241 	jr	Z, 00109$
+      0000C7 03                     242 	inc	bc
+      0000C8                        243 00109$:
+      0000C8 CB 28                  244 	sra	b
+      0000CA CB 19                  245 	rr	c
+      0000CC F8 02                  246 	ldhl	sp,	#2
+      0000CE 79                     247 	ld	a, c
+      0000CF 96                     248 	sub	a, (hl)
+      0000D0 23                     249 	inc	hl
+      0000D1 78                     250 	ld	a, b
+      0000D2 9E                     251 	sbc	a, (hl)
+      0000D3 78                     252 	ld	a, b
+      0000D4 57                     253 	ld	d, a
+      0000D5 CB 7E                  254 	bit	7, (hl)
+      0000D7 28 07                  255 	jr	Z, 00130$
+      0000D9 CB 7A                  256 	bit	7, d
+      0000DB 20 08                  257 	jr	NZ, 00131$
+      0000DD BF                     258 	cp	a, a
+      0000DE 18 05                  259 	jr	00131$
+      0000E0                        260 00130$:
+      0000E0 CB 7A                  261 	bit	7, d
+      0000E2 28 01                  262 	jr	Z, 00131$
+      0000E4 37                     263 	scf
+      0000E5                        264 00131$:
+      0000E5 38 24                  265 	jr	C, 00103$
+                                    266 ;main.c:58: if (n % i == 0) {
+      0000E7 C1                     267 	pop	bc
+      0000E8 E1                     268 	pop	hl
+      0000E9 E5                     269 	push	hl
+      0000EA C5                     270 	push	bc
+      0000EB E5                     271 	push	hl
+      0000EC F8 08                  272 	ldhl	sp,	#8
+      0000EE 2A                     273 	ld	a, (hl+)
+      0000EF 66                     274 	ld	h, (hl)
+      0000F0 6F                     275 	ld	l, a
+      0000F1 E5                     276 	push	hl
+      0000F2 CDr00r00               277 	call	__modsint
+      0000F5 E8 04                  278 	add	sp, #4
+      0000F7 7A                     279 	ld	a, d
+      0000F8 B3                     280 	or	a, e
+      0000F9 20 07                  281 	jr	NZ, 00106$
+                                    282 ;main.c:59: flag = 0;
+      0000FB AF                     283 	xor	a, a
+      0000FC F8 00                  284 	ldhl	sp,	#0
+      0000FE 22                     285 	ld	(hl+), a
+      0000FF 77                     286 	ld	(hl), a
+                                    287 ;main.c:60: break;
+      000100 18 09                  288 	jr	00103$
+      000102                        289 00106$:
+                                    290 ;main.c:56: for (i = 2; i <= n / 2; ++i) {
+      000102 F8 02                  291 	ldhl	sp,	#2
+      000104 34                     292 	inc	(hl)
+      000105 20 B7                  293 	jr	NZ, 00105$
+      000107 23                     294 	inc	hl
+      000108 34                     295 	inc	(hl)
+      000109 18 B3                  296 	jr	00105$
+      00010B                        297 00103$:
+                                    298 ;main.c:64: return flag;
+      00010B F8 00                  299 	ldhl	sp,	#0
+      00010D 2A                     300 	ld	a, (hl+)
+      00010E 5F                     301 	ld	e, a
+      00010F 56                     302 	ld	d, (hl)
+                                    303 ;main.c:65: }
+      000110 E8 04                  304 	add	sp, #4
+      000112 C9                     305 	ret
+                                    306 	.area _CODE
+                                    307 	.area _CABS (ABS)
