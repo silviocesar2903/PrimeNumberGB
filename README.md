@@ -1,5 +1,5 @@
-#Prime Numbers GB
-
+# Prime Numbers GB
+ 
 esse codigo tem por obejtivo tentar calcular os numeros primro de 0 a 2048
 no game boy original feito somente por diverção.
 
